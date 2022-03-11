@@ -2,6 +2,8 @@ CC := g++
 CXXFLAGS :=-Wall -g -Werror -pedantic
 EXE := test
 
+all: ${EXE}
+
 .PHONY: clean clear try
 
 grid.o: grid.cpp grid.h

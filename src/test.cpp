@@ -2,13 +2,24 @@
 #include "grid.h"
 #include "game.h"
 
+static void
+two_player_game() {
+    Game g;
+    char col;
+    int line;
+
+    while (not g.IsFinished()) {
+        cout << g << g.GetPlayer() << "'s turn: ";
+        if (!(cin >> col >> line))
+            return;
+        g.Play(line - 1, col - 'a', g.GetPlayer());
+    }
+    cout << g;
+}
+
 int
 main() {
-    Game g;
-
-    g.Print();
-    g.Play(2, 3, Black);
-    g.Print();
+    two_player_game();
 
     return 0;
 }
