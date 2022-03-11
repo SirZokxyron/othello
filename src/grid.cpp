@@ -13,7 +13,7 @@ Cell Grid::GetCell(int i, int j) const {
     if (i < 0 || i > 7 || j < 0 || j > 7)
         return Empty;
     return _grid[i][j];
-};
+}
 
 void Grid::Print() const {
     // grid x label
