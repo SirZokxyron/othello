@@ -19,6 +19,7 @@ public:
     bool IsFinished();
     void Print() const { _grid.Print(); };
     Cell GetPlayer() const { return _current_player; };
+    Cell GetCell(int i, int j) const { return _grid.GetCell(i, j); };
     friend ostream& operator<<(ostream& os, const Game& g);
 };
 

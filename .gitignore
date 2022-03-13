@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# COC
+src/compile_commands.json
+*/.cache
