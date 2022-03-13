@@ -10,13 +10,28 @@ private:
     wxMenuBar *_menu_bar;
     wxMenu *_game_menu;
     Game *_game;
+    wxStaticText *_current_player,
+                 *_score_white,
+                 *_score_black;
+    int _grid_size;
 
 public:
+    // Constructors
     Window();
+
+    // Event callbacks
     void OnExit(wxCommandEvent &event);
+    void OnNewGame(wxCommandEvent &event);
     void OnPaint(wxPaintEvent &event);
     void OnClick(wxMouseEvent &event);
+
+    // Methods
     void OnDraw();
+    void GetWindowInfo(
+        int &window_w, int &window_h,
+        int &x_offset, int &y_offset,
+        int &cell_size
+    );
 
     DECLARE_EVENT_TABLE()
 };
