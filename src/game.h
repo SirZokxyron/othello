@@ -4,6 +4,7 @@
 #include "grid.h"
 #include <cassert>
 
+// Game object
 class Game {
 private:
     Grid _grid;
@@ -12,7 +13,7 @@ private:
 public:
     bool Play(int i, int j, Cell current);
     bool Visit(int i, int j, Cell current, bool test);
-    bool IsValid(int i, int j, Cell current);
+    bool MoveAvailable(int i, int j, Cell current);
     bool VisitWorker(
         int i, int j, int di, int dj, const Cell &current, bool test, int count
     );

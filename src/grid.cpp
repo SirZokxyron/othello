@@ -1,33 +1,36 @@
 #include "grid.h"
 
 Grid::Grid() {
+    // Empty init of the array
     for (auto &line:_grid)
         for (auto &cell:line)
             cell = Empty;
 
+    // Setting up the initial pattern
     _grid[3][3] = _grid[4][4] = White;
     _grid[3][4] = _grid[4][3] = Black;
 }
 
 Cell Grid::GetCell(int i, int j) const {
+    // If the hit is outside the grid, return empty
     if (i < 0 || i > 7 || j < 0 || j > 7)
         return Empty;
-    return _grid[i][j];
+    return _grid[i][j]; // Otherwise, return the cell
 }
 
 void Grid::Print() const {
-    // grid x label
+    // Grid x label display
     cout << "\n ";
     for (int i = 0; i < 8; ++i)
         cout << " " << char('a' + i) << " ";
     cout << endl;
 
-    // top border
+    // Top border display
     for (int i = 0; i < 8*3 + 2; ++i)
         cout << TH_PIPE;
     cout << endl;
 
-    // grid
+    // Grid display
     for (int i = 0; i < 8; ++i) {
         const char *cell;
 
@@ -35,7 +38,7 @@ void Grid::Print() const {
         for (int j = 0; j < 8; ++j) {
             switch(_grid[i][j]) {
             case Black:
-                cell = " " BULLET " ";
+                cell = BLACK " " BULLET " " NORMAL;
                 break;
 
             case White:
@@ -48,11 +51,11 @@ void Grid::Print() const {
             }
             cout << cell;
         }
-        // grid y label
+        // Grid y label display
         cout << RV_PIPE << "  " << i + 1 << endl;
     }
 
-    // bottom border
+    // Bottom border display
     for (int i = 0; i < 8*3 + 2; ++i)
         cout << BH_PIPE;
     cout << endl;
@@ -69,7 +72,7 @@ ostream& operator<<(ostream& os, const Cell &cell) {
         break;
 
     default:
-        throw 1; /* Printing empty cell */
+        throw 1; // Printing empty cell exception
     }
 
     return os;
