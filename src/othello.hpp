@@ -2,7 +2,7 @@
 #define _OTHELLO_H_
 
 #include <wx/wx.h>
-#include "window.h"
+#include "window.hpp"
 
 class Othello: public wxApp {
 public:

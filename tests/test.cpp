@@ -1,6 +1,6 @@
 #include <iostream>
-#include "../src/grid.h"
-#include "../src/game.h"
+#include "../src/grid.hpp"
+#include "../src/game.hpp"
 
 static void
 two_player_game() {

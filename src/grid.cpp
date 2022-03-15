@@ -1,4 +1,4 @@
-#include "grid.h"
+#include "grid.hpp"
 
 Grid::Grid() {
     // Empty init of the array

@@ -2,8 +2,8 @@
 #define _WINDOW_H_
 
 #include <wx/wx.h>
-#include "game.h"
-#include "grid.h"
+#include "game.hpp"
+#include "grid.hpp"
 
 class Window: public wxFrame {
 private:

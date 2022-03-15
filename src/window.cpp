@@ -1,4 +1,4 @@
-#include "window.h"
+#include "window.hpp"
 
 Window::Window(): wxFrame(NULL, wxID_ANY, "Othello", wxDefaultPosition, wxSize(500, 500)) {
     // Game attributes

@@ -1,4 +1,4 @@
-#include "othello.h"
+#include "othello.hpp"
 
 bool Othello::OnInit() {
     Window *window;

@@ -1,7 +1,7 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 
-#include "grid.h"
+#include "grid.hpp"
 #include <cassert>
 
 // Game object

@@ -1,4 +1,4 @@
-#include "game.h"
+#include "game.hpp"
 
 bool Game::MoveAvailable(int i, int j, Cell current) {
     // Testing the move
@@ -78,7 +78,7 @@ bool Game::IsFinished() {
         for (int j = 0; j < 8; ++j)
             if (MoveAvailable(i, j, Black) or MoveAvailable(i, j, White))
                 return false;
-                
+
     // If none, then game is finished
     return true;
 }
