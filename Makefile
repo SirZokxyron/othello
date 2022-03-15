@@ -1,7 +1,7 @@
 # Compiler flags
 
 CC := g++
-CXXFLAGS += -Wall -g -Werror -pedantic #-Wextra
+CXXFLAGS += -Wall -g -Werror -pedantic # -Wextra (prevents WxWidget compilation)
 
 # Additions for WxWidgets
 
@@ -29,19 +29,22 @@ EXE := $(O)test.out $(O)othello.out
 
 all: ${EXE}
 
-$(S)grid.o: $(S)grid.cpp $(S)grid.h
-$(S)game.o: $(S)game.cpp $(S)game.h $(S)grid.h
-$(T)test.o: $(T)test.cpp $(S)game.h $(S)grid.h
-$(S)othello.o: $(S)othello.cpp $(S)othello.h $(S)window.h
-$(S)window.o: $(S)window.cpp $(S)window.h $(S)game.h $(S)grid.h
+$(S)grid.o:      $(S)grid.cpp                                          $(S)grid.h
+$(S)game.o:      $(S)game.cpp                               $(S)game.h $(S)grid.h
+$(T)test.o:      $(T)test.cpp                               $(S)game.h $(S)grid.h
+$(S)othello.o:   $(S)othello.cpp $(S)othello.h $(S)window.h
+$(S)window.o:    $(S)window.cpp                $(S)window.h $(S)game.h $(S)grid.h
 
-$(O)test.out: $(T)test.o $(S)grid.o $(S)game.o
-$(O)othello.out: $(S)othello.o $(S)game.o $(S)grid.o $(S)window.o
+$(O)test.out:    $(T)test.o                                 $(S)game.o $(S)grid.o
+$(O)othello.out: $(S)othello.o                 $(S)window.o $(S)game.o $(S)grid.o 
 
 # Utils
 
 clean:
 	rm -f */*.o
+
+try: $(O)test.out
+	./$<
 
 test: $(O)othello.out
 	./$<
