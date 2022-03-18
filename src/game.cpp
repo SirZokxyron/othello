@@ -38,8 +38,10 @@ bool Game::Visit(int i, int j, Cell current, bool test) {
     isValid = UL || LE || DL || DO || DR || RI || UR || UP;
 
     // If the visit was not a test and the move is valid
-    if (not test and isValid)
+    if (not test and isValid) {
         _grid.SetCell(i, j, current);
+        (current == Black) ? _black_amount++ : _white_amount++; //! Testing stuff
+    }
 
     return isValid;
 }
@@ -63,9 +65,11 @@ bool Game::VisitWorker(
     // If it's the other player color, then we visit it, if it's valid
     if (VisitWorker(i + di, j + dj, di, dj, current, test, count + 1)) {
         // If the visit was not a test
-        if (not test)
+        if (not test) {
             // We flip it to the current player color
             _grid.SetCell(i + di, j + dj, current);
+            (current == Black) ? _black_amount++ & _white_amount-- : _black_amount-- & _white_amount++; //! Testing stuff
+        }
         return true;
     }
 
@@ -81,6 +85,16 @@ bool Game::IsFinished() {
 
     // If none, then game is finished
     return true;
+}
+
+int Game::GetScore(Cell player) const {
+    // Protection against error on our side
+    assert(player != Empty);
+    // The higher a score is, the higher is the advantage of the player in the game
+    if (player == Black)
+        return _black_amount - _white_amount;
+    else
+        return _white_amount - _black_amount;
 }
 
 ostream& operator<<(ostream& os, const Game& g) {
