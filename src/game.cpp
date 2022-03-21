@@ -10,8 +10,11 @@ bool Game::Play(int i, int j, Cell current) {
     bool move_okay = Visit(i, j, current, false);
 
     // If the move was valid, switch the player
-    if (move_okay)
+    if (move_okay) {
         _current_player = (_current_player == Black ? White : Black);
+        if (not CanPlay(GetPlayer()))
+            _current_player = (_current_player == Black ? White : Black);
+    }
 
     return move_okay;
 }
@@ -30,7 +33,7 @@ bool Game::Visit(int i, int j, Cell current, bool test) {
     UL = VisitWorker(i, j, -1, -1, current, test, 0); // up   left
     LE = VisitWorker(i, j, -1,  0, current, test, 0); //      left
     DL = VisitWorker(i, j, -1,  1, current, test, 0); // down left
-    DO = VisitWorker(i, j,  0,  1, current, test, 0); // down 
+    DO = VisitWorker(i, j,  0,  1, current, test, 0); // down
     DR = VisitWorker(i, j,  1,  1, current, test, 0); // down right
     RI = VisitWorker(i, j,  1,  0, current, test, 0); //      right
     UR = VisitWorker(i, j,  1, -1, current, test, 0); // up   right
@@ -76,15 +79,18 @@ bool Game::VisitWorker(
     return false;
 }
 
-bool Game::IsFinished() {
-    // For every cell of the grid we check if black or white has a move available
+bool Game::CanPlay(Cell player) {
+    // For every cell of the grid we check if the player has a move available
     for (int i = 0; i < 8; ++i)
         for (int j = 0; j < 8; ++j)
-            if (MoveAvailable(i, j, Black) or MoveAvailable(i, j, White))
-                return false;
+            if (MoveAvailable(i, j, player))
+                return true;
 
-    // If none, then game is finished
-    return true;
+    return false;
+}
+
+bool Game::IsFinished() {
+    return not(CanPlay(Black) or CanPlay(White));
 }
 
 int Game::GetScore(Cell player) const {
@@ -92,9 +98,9 @@ int Game::GetScore(Cell player) const {
     assert(player != Empty);
     // The higher a score is, the higher is the advantage of the player in the game
     if (player == Black)
-        return _black_amount - _white_amount;
+        return _black_amount;
     else
-        return _white_amount - _black_amount;
+        return _white_amount;
 }
 
 ostream& operator<<(ostream& os, const Game& g) {

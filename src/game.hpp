@@ -19,6 +19,7 @@ public:
         int i, int j, int di, int dj, const Cell& current, bool test, int count
     );
     bool IsFinished();
+    bool CanPlay(Cell player);
     void Print() const { _grid.Print(); };
     Cell GetPlayer() const { return _current_player; };
     Cell GetCell(int i, int j) const { return _grid.GetCell(i, j); };
