@@ -3,7 +3,7 @@
 
 #include "game.hpp"
 
-#define MAX_REC 6
+#define MAX_REC 8
 
 struct Move {
 	int _i;
@@ -18,7 +18,7 @@ private:
 public:
 	Computer(Cell color): _color(color) {};
 	Move GetBestMove(Game g) const;
-	int MinMaxAB(Game g, int i, int j, int depth, int alpha, int beta, Cell current) const;
+	int MinMaxAB(Game g, int i, int j, int depth, int alpha, int beta) const;
 };
 
 #endif /* _COMPUTER_H_ */

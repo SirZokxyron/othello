@@ -10,7 +10,7 @@ two_player_game() {
 
     Computer B(Black);
     Computer W(White);
-    Move move(0, 0);
+    Move move(-1, -1);
 
     while (not g.IsFinished()) {
         cout << g << g.GetPlayer() << "'s turn: ";
@@ -20,9 +20,9 @@ two_player_game() {
             move = W.GetBestMove(g);
         g.Play(move._i, move._j, g.GetPlayer());
         // ANSI esc code to go up 1 line, erase it, then go up 12 lines at the beginning
-        cout << move._i << " "  << move._j << endl;
-        cout << "\x1b[1A\x1b[2K\x1b[12F";
-        // sleep(1);
+        // cout << move._i << " "  << move._j << endl;
+        // cout << "\x1b[1A\x1b[2K\x1b[12F";
+        // usleep(500000);
     }
     cout << g;
 }
