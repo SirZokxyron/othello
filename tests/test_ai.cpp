@@ -18,7 +18,7 @@ two_player_game() {
             move = B.GetBestMove(g);
         else
             move = W.GetBestMove(g);
-        g.Play(move._i, move._j, g.GetPlayer());
+        g.Play(move, g.GetPlayer());
         // ANSI esc code to go up 1 line, erase it, then go up 12 lines at the beginning
         // cout << move._i << " "  << move._j << endl;
         // cout << "\x1b[1A\x1b[2K\x1b[12F";

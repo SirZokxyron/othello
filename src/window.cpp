@@ -3,10 +3,19 @@
 Window::Window(): wxFrame(NULL, wxID_ANY, "Othello", wxDefaultPosition, wxSize(500, 500)) {
     // Game attributes
     _grid_size = 8;
+    _with_computer = false;
+    _finished = false;
+    _computer = nullptr;
+    _last_move.i = _last_move.j = -1;
+
+    // New submenu
+    _new_submenu = new wxMenu();
+    _new_submenu->Append(id_two_player, wxT("&Two player"));
+    _new_submenu->Append(id_computer, wxT("&Against computer"));
 
     // Game menu
     _game_menu = new wxMenu();
-    _game_menu->Append(wxID_NEW, wxT("&New"));
+    _game_menu->Append(wxID_ANY, "&New", _new_submenu);
     _game_menu->Append(wxID_EXIT, wxT("&Quit"));
 
     // Menu bar
@@ -15,16 +24,12 @@ Window::Window(): wxFrame(NULL, wxID_ANY, "Othello", wxDefaultPosition, wxSize(5
     SetMenuBar(_menu_bar);
 
     // Texts
-    _score_white = new wxStaticText(this, wxID_ANY, wxT(""), wxDefaultPosition);
-    _score_black = new wxStaticText(this, wxID_ANY, wxT(""), wxDefaultPosition);
-    _current_player = new wxStaticText(this, wxID_ANY, wxT(""), wxDefaultPosition);
-    _current_player->SetOwnBackgroundColour(wxColour("#b3d9ff"));
-    _current_player->SetForegroundColour("Black");
+    _score = new wxStaticText(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize);
 
     // Shorcuts
     wxAcceleratorEntry entries[2];
-    entries[0].Set(wxACCEL_CTRL, 'N', wxID_NEW);
-    entries[1].Set(wxACCEL_CTRL, 'X', wxID_EXIT);
+    entries[0].Set(wxACCEL_CTRL, 'N', id_two_player);
+    entries[1].Set(wxACCEL_CTRL, 'Q', wxID_EXIT);
     wxAcceleratorTable accel(2, entries);
     SetAcceleratorTable(accel);
 
@@ -34,6 +39,8 @@ Window::Window(): wxFrame(NULL, wxID_ANY, "Othello", wxDefaultPosition, wxSize(5
 
 void Window::OnExit(wxCommandEvent &event) {
     event.Skip();
+
+    // Delete the window
     Destroy();
 }
 
@@ -54,8 +61,8 @@ void Window::GetWindowInfo(
     y_offset = 2*cell_size;
 }
 
-void Window::OnDraw() {
-    wxClientDC dc(static_cast<wxWindow *>(this));
+void Window::OnPaint(wxPaintEvent &event) {
+    wxPaintDC dc(this);
     wxCoord window_w, window_h,
             cell_size,
             x_offset, y_offset;
@@ -80,63 +87,68 @@ void Window::OnDraw() {
     for (int i = 0; i < _grid_size; ++i) {
         for (int j = 0; j < _grid_size; ++j) {
             switch(_game->GetCell(i, j)) {
-            case Black:
+            case Black: // Black dots
                 dc.SetBrush(*wxBLACK_BRUSH);
                 break;
 
-            case White:
+            case White: // White dots
                 dc.SetBrush(*wxWHITE_BRUSH);
                 break;
 
-            default:
+            default:    // Empty cell
                 continue;
             }
             dc.DrawCircle(
-                i*cell_size + cell_size/2 + x_offset,
-                j*cell_size + cell_size/2 + y_offset,
+                j*cell_size + cell_size/2 + x_offset,
+                i*cell_size + cell_size/2 + y_offset,
                 cell_size/3
             );
         }
     }
 
     // Draw the score
-
-    // White on the left
+    // The current player has its stone padded in red
     {
         wxCoord text_h, text_w;
-        const char *white_msg = " White's turn ",
-                   *black_msg = " Black's turn ",
-                   *current_player_msg;
-        // TODO update score to real values
+        wxString score_string;
 
-        // White on the left
-        dc.SetBrush(*wxWHITE_BRUSH);
-        dc.DrawCircle(cell_size + x_offset, cell_size, cell_size/3);
-        dc.GetMultiLineTextExtent(wxT("2"), &text_w, &text_h);
-        _score_white->Move(2*cell_size + x_offset, cell_size - text_h/2);
-        _score_white->SetLabel(wxT("2"));
-
-        // Black on the right
-        dc.SetBrush(*wxBLACK_BRUSH);
-        dc.DrawCircle(window_w - x_offset - cell_size, cell_size, cell_size/3);
-        dc.GetMultiLineTextExtent(wxT("2"), &text_w, &text_h);
-        _score_black->Move(
-            window_w - x_offset - 2*cell_size - text_w,
-            cell_size - text_h/2
+        // Create a string containing the score
+        score_string = wxString::Format(
+            "%d - %d", _game->GetScore(White), _game->GetScore(Black)
         );
-        _score_black->SetLabel(wxT("2"));
 
-        // Current player
-        current_player_msg = (_game->GetPlayer() == Black ? black_msg : white_msg);
-        dc.GetMultiLineTextExtent(wxString(current_player_msg), &text_w, &text_h);
-        _current_player->SetLabel(wxString(current_player_msg));
-        _current_player->Move((window_w - text_w)/2, cell_size - text_h/2);
+        // Moving the score: Maybe use a sizer?
+        _score->SetLabel(score_string);
+        dc.GetMultiLineTextExtent(score_string, &text_w, &text_h);
+        _score->Move(window_w/2 - text_w/2, cell_size - text_h/2);
+
+        // Draw a white on stone
+        if (_game->GetPlayer() == White)
+            dc.SetPen(wxPen(*wxRED, 2, wxSOLID));
+        else
+            dc.SetPen(*wxBLACK_PEN);
+        dc.SetBrush(*wxWHITE_BRUSH);
+        dc.DrawCircle(window_w/2 - text_w/2 - cell_size, cell_size, cell_size/3);
+
+        // Draw a black stone
+        if (_game->GetPlayer() == Black)
+            dc.SetPen(wxPen(*wxRED, 2, wxSOLID));
+        else
+            dc.SetPen(*wxBLACK_PEN);
+        dc.SetBrush(*wxBLACK_BRUSH);
+        dc.DrawCircle(window_w/2 + text_w/2 + cell_size, cell_size, cell_size/3);
     }
-}
 
-void Window::OnPaint(wxPaintEvent &event) {
-    OnDraw();
-    event.Skip();
+    // Draw the last move
+    if (_last_move.i > 0 and _last_move.j > 0) {
+        dc.SetPen(*wxYELLOW_PEN);
+        dc.SetBrush(*wxRED_BRUSH);
+        dc.DrawCircle(
+            _last_move.j*cell_size + cell_size/2 + x_offset,
+            _last_move.i*cell_size + cell_size/2 + y_offset,
+            5
+        );
+    }
 }
 
 void Window::OnClick(wxMouseEvent &event) {
@@ -146,6 +158,12 @@ void Window::OnClick(wxMouseEvent &event) {
             x, y,
             i, j;
 
+    // If finished we do nothing
+    if (_finished) {
+        event.Skip();
+        return;
+    }
+
     // Window info
     GetWindowInfo(window_w, window_h, x_offset, y_offset, cell_size);
 
@@ -154,13 +172,57 @@ void Window::OnClick(wxMouseEvent &event) {
     y = event.GetY();
 
     // Cell index
-    i = (x - x_offset)/cell_size;
-    j = (y - y_offset)/cell_size;
+    i = (y - y_offset)/cell_size;
+    j = (x - x_offset)/cell_size;
+
+    // Creation of a move
+    // We have to use the struct keyword because of the method this->Move();
+    struct Move move(i, j);
 
     // Was the click in the board?
     if (0 <= i and i < _grid_size and 0 <= j and j < _grid_size) {
-        _game->Play(i, j, _game->GetPlayer());
-        OnDraw();
+        // Play the move, and save it
+        if (_game->Play(move, _game->GetPlayer()))
+            _last_move = move;
+
+        // Let the computer play while it is its turn
+        // We use a while loop in case the other player passes his turn
+        if (_with_computer)
+            while (_game->GetPlayer() == White and not _game->IsFinished()) {
+                _last_move = _computer->GetBestMove(*_game);
+                _game->Play(_last_move, _game->GetPlayer());
+            }
+
+        // Draw the grid
+        Refresh();
+    }
+
+    // End of game popup message
+    if (_game->IsFinished()) {
+        int score_black = _game->GetScore(Black),
+            score_white = _game->GetScore(White);
+        wxString win_message;
+
+        // Setting the finish state
+        _finished = true;
+
+        // Setting the win message
+        if (score_black == score_white) {
+            // Draw
+            win_message = wxString("Draw match !");
+        } else if (score_black < score_white) {
+            // White wins
+            win_message = wxString("White wins the match !");
+        } else {
+            // Black wins
+            win_message = wxString("Black wins the match !");
+        }
+
+        // Popping a dialog
+        wxMessageDialog *dial = new wxMessageDialog(
+            NULL, win_message, wxT("End"), wxOK
+        );
+        dial->ShowModal();
     }
 
     event.Skip();
@@ -170,16 +232,52 @@ void Window::OnNewGame(wxCommandEvent &event) {
     // Free old game
     delete _game;
 
+    // Free old computer if exists
+    if (_computer != nullptr)
+        delete _computer;
+
     // New game
     _game = new Game;
-    OnDraw();
+    _with_computer = false;
+    _computer = nullptr;
+
+    // Reset states
+    _finished = false;
+    _last_move.i = _last_move.j = -1;
+
+    // Draw the grid
+    Refresh();
+
+    event.Skip();
+}
+
+void Window::OnNewComputerGame(wxCommandEvent &event) {
+    // Free old game
+    delete _game;
+
+    // Free old computer if exists
+    if (_computer != nullptr)
+        delete _computer;
+
+    // New game with computer
+    _game = new Game;
+    _with_computer = true;
+    _computer = new Computer(White);
+
+    // Reset states
+    _finished = false;
+    _last_move.i = _last_move.j = -1;
+
+    // Draw the grid
+    Refresh();
 
     event.Skip();
 }
 
 BEGIN_EVENT_TABLE(Window, wxFrame)
     EVT_MENU(wxID_EXIT, Window::OnExit)
-    EVT_MENU(wxID_NEW, Window::OnNewGame)
+    EVT_MENU(id_computer, Window::OnNewComputerGame)
+    EVT_MENU(id_two_player, Window::OnNewGame)
     EVT_PAINT(Window::OnPaint)
     EVT_LEFT_DOWN(Window::OnClick)
 END_EVENT_TABLE()

@@ -1,17 +1,32 @@
 #include "game.hpp"
 
-bool Game::MoveAvailable(int i, int j, Cell current) {
+bool Game::MoveAvailable(Move move, Cell current) {
     // Testing the move
-    return Visit(i, j, current, true);
+    return Visit(move.i, move.j, current, true);
 }
 
-bool Game::Play(int i, int j, Cell current) {
+shared_ptr<vector<Move>> Game::AvailableMoves() {
+    // Vector of moves
+    shared_ptr<vector<Move>> move_list(new vector<Move>);
+
+    // Appending available moves to vector
+    for (int i = 0; i < 8; ++i)
+        for (int j = 0; j < 8; ++j)
+            if (MoveAvailable(Move(i, j), GetPlayer()))
+                move_list->push_back(Move(i, j));
+
+    return move_list;
+}
+
+bool Game::Play(Move move, Cell current) {
     // Attempting to do the move
-    bool move_okay = Visit(i, j, current, false);
+    bool move_okay = Visit(move.i, move.j, current, false);
 
     // If the move was valid, switch the player
     if (move_okay) {
         _current_player = (_current_player == Black ? White : Black);
+
+        // If the player cannot play, he passes his tour
         if (not CanPlay(GetPlayer()))
             _current_player = (_current_player == Black ? White : Black);
     }
@@ -19,8 +34,8 @@ bool Game::Play(int i, int j, Cell current) {
     return move_okay;
 }
 
-bool Game::Visit(int i, int j, Cell current, bool test) {
-    bool isValid, UL, LE, DL, DO, DR, RI, UR, UP;
+int Game::Visit(int i, int j, Cell current, bool test) {
+    int isValid, UL, LE, DL, DO, DR, RI, UR, UP;
 
     // Making sure the current player is not Empty
     assert(current != Empty);
@@ -83,7 +98,7 @@ bool Game::CanPlay(Cell player) {
     // For every cell of the grid we check if the player has a move available
     for (int i = 0; i < 8; ++i)
         for (int j = 0; j < 8; ++j)
-            if (MoveAvailable(i, j, player))
+            if (MoveAvailable(Move(i, j), player))
                 return true;
 
     return false;

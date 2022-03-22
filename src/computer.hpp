@@ -3,22 +3,17 @@
 
 #include "game.hpp"
 
-#define MAX_REC 8
-
-struct Move {
-	int _i;
-	int _j;
-	Move(int i, int j): _i(i), _j(j) {};
-	friend ostream& operator<<(ostream& _os, Move& m);
-};
+#define MAX_REC 3
 
 class Computer {
 private:
-	Cell _color;
+    Cell _color;
 public:
-	Computer(Cell color): _color(color) {};
-	Move GetBestMove(Game g) const;
-	int MinMaxAB(Game g, int i, int j, int depth, int alpha, int beta) const;
+    Computer(Cell color): _color(color) {};
+    Move GetBestMove(Game g) const;
+    int MinMaxAB(
+        Game g, Move move, int depth, int alpha, int beta
+    ) const;
 };
 
 #endif /* _COMPUTER_H_ */

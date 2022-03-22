@@ -35,11 +35,11 @@ $(T)test.o:      $(T)test.cpp                                   $(S)game.hpp $(S
 $(S)computer.o:  $(S)computer.cpp								$(S)game.hpp $(S)grid.hpp $(S)computer.hpp
 $(T)test_ai.o:   $(T)test_ai.cpp                                $(S)game.hpp $(S)grid.hpp $(S)computer.hpp
 $(S)othello.o:   $(S)othello.cpp $(S)othello.hpp $(S)window.hpp
-$(S)window.o:    $(S)window.cpp                  $(S)window.hpp $(S)game.hpp $(S)grid.hpp
+$(S)window.o:    $(S)window.cpp                  $(S)window.hpp $(S)game.hpp $(S)grid.hpp $(S)computer.hpp
 
 $(O)test.out:    $(T)test.o                                     $(S)game.o   $(S)grid.o
 $(O)test_ai.out: $(T)test_ai.o                                  $(S)game.o   $(S)grid.o $(S)computer.o
-$(O)othello.out: $(S)othello.o                   $(S)window.o   $(S)game.o   $(S)grid.o 
+$(O)othello.out: $(S)othello.o                   $(S)window.o   $(S)game.o   $(S)grid.o $(S)computer.o
 
 # Utils
 

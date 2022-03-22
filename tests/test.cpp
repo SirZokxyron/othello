@@ -12,7 +12,7 @@ two_player_game() {
         cout << g << g.GetPlayer() << "'s turn: ";
         if (!(cin >> col >> line))
             return;
-        g.Play(line - 1, col - 'a', g.GetPlayer());
+        g.Play(Move(line - 1, col - 'a'), g.GetPlayer());
         // ANSI esc code to go up 1 line, erase it, then go up 12 lines at the beginning
         cout << "\x1b[1A\x1b[2K\x1b[12F";
     }

@@ -3,6 +3,16 @@
 
 #include "grid.hpp"
 #include <cassert>
+#include <vector>
+#include <memory>
+
+// Move object
+struct Move {
+    int i; // Line number
+    int j; // Column number
+    Move(int i=0, int j=0): i(i), j(j) {};
+    friend ostream& operator<<(ostream& _os, Move& m);
+};
 
 // Game object
 class Game {
@@ -12,11 +22,13 @@ private:
     int _black_amount = 2, _white_amount = 2;
 
 public:
-    bool Play(int i, int j, Cell current);
-    bool Visit(int i, int j, Cell current, bool test);
-    bool MoveAvailable(int i, int j, Cell current);
+    bool Play(Move move, Cell current);
+    int Visit(int i, int j, Cell current, bool test);
+    bool MoveAvailable(Move move, Cell current);
+    shared_ptr<vector<Move>> AvailableMoves();
     bool VisitWorker(
-        int i, int j, int di, int dj, const Cell& current, bool test, int count
+        int i, int j, int di, int dj, const Cell& current,
+        bool test, int count
     );
     bool IsFinished();
     bool CanPlay(Cell player);

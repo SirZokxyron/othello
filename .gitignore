@@ -34,3 +34,6 @@
 # COC
 src/compile_commands.json
 */.cache
+
+# Valgrind dump
+vgcore.*
