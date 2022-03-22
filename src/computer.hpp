@@ -11,6 +11,7 @@ private:
 public:
     Computer(Cell color): _color(color) {};
     Move GetBestMove(Game g) const;
+    Cell GetColor() const { return _color; };
     int MinMaxAB(
         Game g, Move move, int depth, int alpha, int beta
     ) const;

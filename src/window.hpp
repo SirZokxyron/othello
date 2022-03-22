@@ -9,14 +9,16 @@
 // Menu IDs
 enum {
     id_two_player,
-    id_computer
+    id_computer_white,
+    id_computer_black
 };
 
 class Window: public wxFrame {
 private:
     wxMenuBar *_menu_bar;
-    wxMenu *_game_menu;
-    wxMenu *_new_submenu;
+    wxMenu *_game_menu,
+           *_new_submenu,
+           *_new_computer_subsubmenu;
     Game *_game;
     Computer *_computer;
     wxStaticText *_score;

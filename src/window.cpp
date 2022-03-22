@@ -8,19 +8,24 @@ Window::Window(): wxFrame(NULL, wxID_ANY, "Othello", wxDefaultPosition, wxSize(5
     _computer = nullptr;
     _last_move.i = _last_move.j = -1;
 
+    // New computer game subsubmenu
+    _new_computer_subsubmenu = new wxMenu();
+    _new_computer_subsubmenu->Append(id_computer_black, wxT("&Black as computer"));
+    _new_computer_subsubmenu->Append(id_computer_white, wxT("&White as computer"));
+
     // New submenu
     _new_submenu = new wxMenu();
     _new_submenu->Append(id_two_player, wxT("&Two player"));
-    _new_submenu->Append(id_computer, wxT("&Against computer"));
+    _new_submenu->Append(wxID_ANY, wxT("&Against computer"), _new_computer_subsubmenu);
 
     // Game menu
     _game_menu = new wxMenu();
-    _game_menu->Append(wxID_ANY, "&New", _new_submenu);
+    _game_menu->Append(wxID_ANY, wxT("&New"), _new_submenu);
     _game_menu->Append(wxID_EXIT, wxT("&Quit"));
 
     // Menu bar
     _menu_bar = new wxMenuBar();
-    _menu_bar->Append(_game_menu, "&Game");
+    _menu_bar->Append(_game_menu, wxT("&Game"));
     SetMenuBar(_menu_bar);
 
     // Texts
@@ -188,7 +193,7 @@ void Window::OnClick(wxMouseEvent &event) {
         // Let the computer play while it is its turn
         // We use a while loop in case the other player passes his turn
         if (_with_computer)
-            while (_game->GetPlayer() == White and not _game->IsFinished()) {
+            while (_game->GetPlayer() == _computer->GetColor() and not _game->IsFinished()) {
                 _last_move = _computer->GetBestMove(*_game);
                 _game->Play(_last_move, _game->GetPlayer());
             }
@@ -262,7 +267,14 @@ void Window::OnNewComputerGame(wxCommandEvent &event) {
     // New game with computer
     _game = new Game;
     _with_computer = true;
-    _computer = new Computer(White);
+    if (event.GetId() == id_computer_black) {
+        // The computer has to play first
+        _computer = new Computer(Black);
+        _last_move = _computer->GetBestMove(*_game);
+        _game->Play(_last_move, _game->GetPlayer());
+    } else {
+        _computer = new Computer(White);
+    }
 
     // Reset states
     _finished = false;
@@ -276,7 +288,8 @@ void Window::OnNewComputerGame(wxCommandEvent &event) {
 
 BEGIN_EVENT_TABLE(Window, wxFrame)
     EVT_MENU(wxID_EXIT, Window::OnExit)
-    EVT_MENU(id_computer, Window::OnNewComputerGame)
+    EVT_MENU(id_computer_black, Window::OnNewComputerGame)
+    EVT_MENU(id_computer_white, Window::OnNewComputerGame)
     EVT_MENU(id_two_player, Window::OnNewGame)
     EVT_PAINT(Window::OnPaint)
     EVT_LEFT_DOWN(Window::OnClick)
