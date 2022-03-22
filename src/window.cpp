@@ -140,7 +140,7 @@ void Window::OnPaint(wxPaintEvent &event) {
     }
 
     // Draw the last move
-    if (_last_move.i > 0 and _last_move.j > 0) {
+    if (_last_move.i >= 0 and _last_move.j >= 0) {
         dc.SetPen(*wxYELLOW_PEN);
         dc.SetBrush(*wxRED_BRUSH);
         dc.DrawCircle(
