@@ -274,11 +274,11 @@ void Window::OnNewComputerGame(wxCommandEvent &event) {
         _game->Play(_last_move, _game->GetPlayer());
     } else {
         _computer = new Computer(White);
+        _last_move.i = _last_move.j = -1;
     }
 
     // Reset states
     _finished = false;
-    _last_move.i = _last_move.j = -1;
 
     // Draw the grid
     Refresh();
