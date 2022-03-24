@@ -46,10 +46,13 @@ $(O)othello.out: $(S)othello.o                   $(S)window.o   $(S)game.o   $(S
 clean:
 	rm -f */*.o
 
-try: $(O)test.out
+term: $(O)test.out
 	./$<
 
-test: $(O)othello.out
+minmax: $(O)test_ai.out
+	./$<
+
+game: $(O)othello.out
 	./$<
 
 clear: clean
