@@ -7,9 +7,13 @@
 
 class Computer {
 private:
-    Cell _color;
+    Cell _color; // Color of the computer
+
 public:
+    // Constructor
     Computer(Cell color): _color(color) {};
+
+    // Methods
     Move GetBestMove(Game g) const;
     Cell GetColor() const { return _color; };
     int MinMaxAB(
