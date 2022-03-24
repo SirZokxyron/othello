@@ -24,5 +24,13 @@ Compiles and run `test.out`
 > make minmax  
 Compiles and run `test_ai.out`
 
-> make game
+> make game  
 Compiles and run `othello.out`
+
+## Cleaning commands
+
+> make clean  
+Removes `.o` files
+
+> make clear  
+Removes `.o` files and target files
